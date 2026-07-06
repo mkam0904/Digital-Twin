@@ -16,6 +16,6 @@ jobs:
           lfs: true
       - name: Push to Hugging Face Space
         env:
-          HF_TOKEN: ${{ secrets.GITHUB_HF_TOKEN }}
+          HF_TOKEN: ${{ secrets.GITHUB_HF_SYNC }}
         run: |
           git push https://mkam0904:$HF_TOKEN@huggingface.co/spaces/mkam0904/my-Digital-Twin main
