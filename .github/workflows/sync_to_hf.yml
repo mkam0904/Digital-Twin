@@ -18,4 +18,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.GITHUB_HF_TOKEN }}
         run: |
-          git push https://mkam0904:$HF_TOKEN@huggingface.co/spaces/mkam0904/Digital-Twin main
+          git push https://mkam0904:$HF_TOKEN@huggingface.co/spaces/mkam0904/my-Digital-Twin main
