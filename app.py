@@ -159,19 +159,6 @@ You can also send her a note — anonymously or with your name. If you know her,
         #chatbot {
             height: 500px !important;
         }
-        .message {
-            max-width: 95% !important;
-            width: 95% !important;
-        }
-    }
-    #chatbot {
-        width: 100% !important;
-    }
-    /* Hide the submit button next to textbox */
-    .gr-textbox-submit-btn, 
-    button[aria-label="Submit"],
-    .submit-button {
-        display: none !important;
     }
     """
 
@@ -182,4 +169,4 @@ You can also send her a note — anonymously or with your name. If you know her,
     )
 
 print("Launching...")
-demo.launch(debug=True, show_error=True, quiet=False, css=CUSTOM_CSS, ssr_mode=False)
+demo.launch(debug=True, show_error=True, quiet=False, css=CUSTOM_CSS)
