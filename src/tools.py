@@ -24,7 +24,7 @@ class ToolRegistry:
     """
 
     notifier: Notifier
-    fifa_client: "FifaClient" = None
+    fifa_client: Optional["FifaClient"] = None
     specs: list[dict] = field(init=False)
 
     def __post_init__(self) -> None:
