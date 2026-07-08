@@ -1,0 +1,3 @@
+# requirements-dev.txt — dev/CI tools, not needed by the Space
+ruff
+pytest
