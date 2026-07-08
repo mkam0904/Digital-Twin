@@ -27,4 +27,4 @@ This repository uses a GitHub Actions CI/CD pipeline to automatically sync code 
 * **Workflow File:** `.github/workflows/sync_to_hf.yml`
 * **Target Space:** `mkam0904/my-Digital-Twin`
 * **Mechanism:** Uses a forced push (`git push --force`) to ensure GitHub code strictly overwrites any conflicting files on Hugging Face.
-* **Authentication:** Secured via a Fine-Grained Hugging Face Write Token, stored as a GitHub Repository Secret (`GITHUB_HF_TOKEN`).
+* **Authentication:** Secured via a Fine-Grained Hugging Face Write Token, stored as a GitHub Repository Secret (`HF_SYNC_TOKEN`).
