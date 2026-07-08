@@ -167,6 +167,10 @@ You can also send her a note — anonymously or with your name. If you know her,
     #chatbot {
         width: 100% !important;
     }
+    /* Hide checkmark submit button */
+    .textbox-submit-btn {
+        display: none !important;
+    }
     """
 
     msg.submit(
