@@ -96,7 +96,8 @@ You can also send her a note — anonymously or with your name. If you know her,
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
     chatbot = gr.Chatbot(
-        avatar_images=(None, AVATAR_PATH),
+        # avatar_images=(None, AVATAR_PATH),
+        avatar_images=(None, None),
         height=400,
         container=True,
         autoscroll=True,
@@ -152,6 +153,19 @@ You can also send her a note — anonymously or with your name. If you know her,
         white-space: pre;
         overflow-x: auto;
         line-height: 1.35;
+    }
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+        #chatbot {
+            height: 500px !important;
+        }
+        .message {
+            max-width: 95% !important;
+            width: 95% !important;
+        }
+    }
+    #chatbot {
+        width: 100% !important;
     }
     """
 
