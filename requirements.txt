@@ -1,0 +1,7 @@
+# requirements.txt
+openai
+gradio==6.14.0          # pin what you tested (from pip show gradio)
+requests
+chromadb
+huggingface_hub
+python-dotenv
