@@ -99,7 +99,7 @@ You can also send her a note — anonymously or with your name. If you know her,
         avatar_images=(None, AVATAR_PATH),
         height=400,
         container=True,
-        # autoscroll=False,
+        autoscroll=True,
         elem_id="chatbot"
     )
 
