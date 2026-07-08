@@ -97,7 +97,7 @@ You can also send her a note — anonymously or with your name. If you know her,
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
     chatbot = gr.Chatbot(
         avatar_images=(None, AVATAR_PATH),
-        height=600,
+        height=400,
         container=True,
         # autoscroll=False,
         elem_id="chatbot"
