@@ -1,10 +1,14 @@
 """Tool registry: OpenAI function-calling specs + dispatch."""
 
+
+
 import re
 import json
 import random
+from typing import TYPE_CHECKING, Optional
+if TYPE_CHECKING:
+    from fifa import FifaClient
 from dataclasses import dataclass, field
-
 from notifications import Notifier
 
 __all__ = ["ToolRegistry"]
