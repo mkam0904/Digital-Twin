@@ -1,3 +1,5 @@
+# config.py → data_loader.py → notifications.py → tools.py → llm.py → rag.py → chat.py → app.py
+
 def clean_pdf_text(text):
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     # join hyphenated line breaks: "responsi-\nbility" -> "responsibility"
@@ -22,3 +24,29 @@ Topic_Context = {
     frozenset(["fitness","health"]): "Mamta has run a half marathon, she enjoys yoga, biking, hiking and kayaking",
     frozenset(["hobbies"]): "Mamta loves doing jigsaw puzzles",
 }  
+
+import inspect
+from IPython.display import Markdown, display 
+import random
+from pprint import pprint
+import re
+import uuid
+from huggingface_hub import hf_hub_download
+import sys
+from collections import defaultdict
+import pytz
+import sys
+print(sys.executable)
+import logging
+
+logging.basicConfig(
+    filename="gradio_debug.log",
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+
+CACHE = {}
+use_freeapilive = 0 
+
+# Add Pushover tool for the LLM
+tools_l.append({"type":"function","function":send_notification_function_d})

@@ -91,91 +91,53 @@ class FifaClient:
         }
         return self._fetch(params, cache_key=f"{date_from}:{date_to}")
 
-    def _bracket_placeholders(self) -> list[dict]:
-        """Static placeholders for fixtures the API hasn't created yet.
-
-        The API only creates a cup fixture once both teams are known, so late
-        rounds are absent until earlier rounds finish. These fill the gap and
-        are suppressed per-round as soon as the API returns real fixtures for
-        that round (see today_cards). 2026-bracket-specific.
-        """
-        if self.season != 2026:
-            return []
-
-        def ph(y, mo, d, hour, minute, round_, home, away, time_tbd=False):
-            return {
-                "home": home,
-                "away": away,
-                "home_score": None,
-                "away_score": None,
-                "penalty_home": None,
-                "penalty_away": None,
-                "status": "NS",
-                "kickoff": datetime(y, mo, d, hour, minute, tzinfo=self.tz),
-                "round": round_,
-                "time_tbd": time_tbd,
-            }
-
-        return [
-            ph(2026, 7, 14, 12, 0, "Semi-finals",
-               "Winner France-Morocco", "Winner Spain-Belgium", time_tbd=True),
-            ph(2026, 7, 15, 12, 0, "Semi-finals",
-               "Winner Norway-England", "Winner Argentina-Switzerland", time_tbd=True),
-            ph(2026, 7, 18, 12, 0, "3rd Place Final",
-               "Loser Semi-final 1", "Loser Semi-final 2", time_tbd=True),
-            ph(2026, 7, 19, 12, 0, "Final",
-               "Winner Semi-final 1", "Winner Semi-final 2"),
-        ]
-
     def today_cards(self) -> str:
-        """Render TODAY / COMING UP (through the Final) / PAST with round labels."""
+        """Render TODAY / COMING UP (through the Final) / PAST, aligned, winners bolded."""
         today, tomorrow, yesterday = self._dates()
 
         matches_today = self.get_matches(today)
-        matches_upcoming = self.get_matches_range(tomorrow, self.tournament_end)
+        matches_upcoming = sorted(
+            self.get_matches_range(tomorrow, self.tournament_end),
+            key=lambda m: m["kickoff"],
+        )
         matches_past = self.get_matches(yesterday)
-
-        # Add bracket placeholders for rounds the API hasn't created yet.
-        api_rounds = {(m.get("round") or "").strip().lower() for m in matches_upcoming}
-        for placeholder in self._bracket_placeholders():
-            if placeholder["round"].strip().lower() not in api_rounds:
-                matches_upcoming.append(placeholder)
-        matches_upcoming.sort(key=lambda m: m["kickoff"])
 
         sections = [
             ("PAST", matches_past),
             ("TODAY", matches_today),
-            ("COMING UP", matches_upcoming),
+            ("COMING UP", matches_upcoming)
         ]
 
-        blocks = []
-        for label, matches in sections:
-            if not matches:
-                continue
-            rounds_and_rows = [
-                (m.get("round"), self._row(self.to_view_model(m))) for m in matches
-            ]
-            widths = self._column_widths([row for _, row in rounds_and_rows])
+        section_rows = [
+            (label, [self._row(self.to_view_model(m)) for m in matches])
+            for label, matches in sections
+            if matches
+        ]
 
-            body_lines = []
-            current_round = object()  # sentinel: differs from any real value
-            for round_, row in rounds_and_rows:
-                if round_ != current_round:
-                    if body_lines:
-                        body_lines.append("")
-                    if round_:
-                        # body_lines.append(round_.upper())
-                        body_lines.append(f"<b>{round_.upper()}</b>")
-                    current_round = round_
-                body_lines.append(self._format_row(row, widths))
-
-            body = "\n".join(body_lines)
-            blocks.append(f"### {label}\n<pre>\n{body}\n</pre>")
-
-        if not blocks:
+        if not section_rows:
             return "⚠️ No FIFA matches found or API failed"
 
+        widths = self._column_widths([row for _, rows in section_rows for row in rows])
+
+        blocks = []
+        for label, rows in section_rows:
+            body = "\n".join(self._format_row(row, widths) for row in rows)
+            blocks.append(f"**{label}:**\n<pre>\n{body}\n</pre>")
+
         return "\n\n".join(blocks)
+
+        ''' 
+
+        lines = []
+        for label, rows in section_rows:
+            lines.append(f"{label}:")
+            lines.extend(self._format_row(row, widths) for row in rows)
+            lines.append("")
+
+        body = "\n".join(lines).rstrip()
+        return f"<pre>\n{body}\n</pre>"
+
+        '''
 
     # ---- stateless helpers (pure data transforms) ----
 
@@ -196,8 +158,7 @@ class FifaClient:
             "penalty_away": penalty.get("away"),
             "status": m["fixture"]["status"]["short"],
             "kickoff": kickoff,
-            "round": m["league"].get("round"),
-            "time_tbd": False,
+            "league": m["league"]["name"],
         }
 
     @staticmethod
@@ -214,7 +175,6 @@ class FifaClient:
             "penalty_away": m.get("penalty_away"),
             "status": m.get("status") or "NS",
             "kickoff": m.get("kickoff"),
-            "time_tbd": m.get("time_tbd", False),
         }
 
     @staticmethod
@@ -222,13 +182,10 @@ class FifaClient:
         """Build display fields for one match, including winner flags and any penalty score."""
         dt = m["kickoff"]
         date_str = f"{dt.strftime('%b').upper()} {dt.day}"
-        if m.get("time_tbd"):
-            time_str, tz_abbr = "TBD", ""
-        else:
-            hour12 = dt.hour % 12 or 12
-            ampm = "am" if dt.hour < 12 else "pm"
-            time_str = f"{hour12} {ampm}" if dt.minute == 0 else f"{hour12}:{dt.minute:02d} {ampm}"
-            tz_abbr = dt.tzname() or ""
+        hour12 = dt.hour % 12 or 12
+        ampm = "am" if dt.hour < 12 else "pm"
+        time_str = f"{hour12} {ampm}" if dt.minute == 0 else f"{hour12}:{dt.minute:02d} {ampm}"
+        tz_abbr = dt.tzname() or ""
 
         status = m["status"]
         home, away = m["home"], m["away"]
@@ -255,6 +212,7 @@ class FifaClient:
         text_cols = [row[:8] for row in rows]
         return tuple(max(len(v) for v in col) for col in zip(*text_cols))
 
+    '''
     @staticmethod
     def _format_row(row: tuple, widths: tuple[int, ...]) -> str:
         (date_str, time_str, tz_abbr, status, home, hs, as_, away,
@@ -263,9 +221,28 @@ class FifaClient:
 
         home_padded = home.ljust(w[4])
         if home_win:
-            home_padded = home_padded.replace(home, f"<b>{home}</b>", 1)
+            home_padded = home_padded.replace(home, f"<b>{home.upper()}</b>", 1)
 
-        away_padded = f"<b>{away}</b>" if away_win else away
+        away_padded = f"<b>{away.upper()}</b>" if away_win else away
+
+        return (
+            f"{date_str.ljust(w[0])}  {time_str.ljust(w[1])} {tz_abbr.ljust(w[2])} "
+            f"{status.ljust(w[3])} {home_padded} {hs.rjust(w[5])} vs "
+            f"{as_.ljust(w[6])} {away_padded}{pen_suffix}"
+        )
+    ''' 
+
+    @staticmethod
+    def _format_row(row: tuple, widths: tuple[int, ...]) -> str:
+        (date_str, time_str, tz_abbr, status, home, hs, as_, away,
+         home_win, away_win, pen_suffix) = row
+        w = widths
+
+        home_padded = home.ljust(w[4])
+        if home_win:
+            home_padded = home_padded.replace(home, f"<b>{home.upper()}</b>", 1)
+
+        away_padded = f"<b>{away.upper()}</b>" if away_win else away
 
         return (
             f"{date_str.ljust(w[0])}  {time_str.ljust(w[1])} {tz_abbr.ljust(w[2])} "
