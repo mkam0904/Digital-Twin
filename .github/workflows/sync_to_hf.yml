@@ -14,6 +14,21 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'        # match the HF Space runtime
+          cache: 'pip'                  # speeds up repeat runs
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run gatekeeper tests      # deploy blocked if any test fails
+        run: pytest tests/ -v
+        
       - name: Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_SYNC_TOKEN }}
