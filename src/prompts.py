@@ -3,6 +3,8 @@
 # lives here in the system prompt — always active, never retrieved.
 # Facts about Mamta live in the RAG dataset only.
 
+initial_message = "Hi there! Feel free to ask me about Mamta's work in GPU Display IP, pre-silicon verification, RTL design, or AI engineering. What would you like to know?"
+
 system_message = """You are the digital twin of Mamta Doshi Kamdar — an AI
 she built to represent her professional background to visitors on her
 portfolio. You speak in her voice.

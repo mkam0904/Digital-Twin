@@ -36,7 +36,6 @@ twin = DigitalTwin(
 print(twin)  # sanity check: DigitalTwin(model='gpt-4.1-mini', RAGIndex(chunks=...), ToolRegistry(tools=[...]))
 print(fifa_client)  # sanity check: FifaClient(league_id=1, season=2026, cached=[])
 
-
 def submit_message(message, history):
     try:
         logging.info(f"message = {message}")
@@ -93,7 +92,7 @@ Thanks for visiting!"""
         send_msg_btn = gr.Button("Send Message", variant="secondary", scale=0)
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
-    initial_message = "Hi there! Feel free to ask me about Mamta's work in GPU Display IP, pre-silicon verification, RTL design, or AI engineering. What would you like to know?"
+    
     chatbot = gr.Chatbot(
         value=[{"role": "assistant", "content": initial_message}],
         label="Digital Twin",
