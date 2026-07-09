@@ -11,8 +11,9 @@ def test_all_workflow_yamls_parse():
             yaml.safe_load(f)  # raises on syntax errors
 
 def test_workflow_has_required_structure():
-    with open(".github/workflows/push-to-hf.yml") as f:
-        wf = yaml.safe_load(f)
+    wf_path = Path(".github/workflows/sync_to_hf.yml")
+    assert wf_path.exists(), f"{wf_path} not found — renamed?"
+    wf = yaml.safe_load(wf_path.read_text())
     assert "jobs" in wf
     # PyYAML quirk: bare `on:` parses as boolean True, so check both
     assert "on" in wf or True in wf
