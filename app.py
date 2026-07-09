@@ -90,7 +90,7 @@ Thanks for visiting!"""
         ai_btn = gr.Button("AI Engineering", variant="secondary", scale=0)
         kpi_btn = gr.Button("KPI", variant="secondary", scale=0)
         fifa_btn = gr.Button("🏆 FIFA World Cup", variant="secondary", scale=0, elem_id="fifa_btn")
-        send_message_btn = gr.Button("Send Message", variant="secondary", scale=0)
+        send_msg_btn = gr.Button("Send Message", variant="secondary", scale=0)
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
     initial_message = "Hi there! Feel free to ask me about Mamta's work in GPU Display IP, pre-silicon verification, RTL design, or AI engineering. What would you like to know?"
@@ -135,7 +135,7 @@ Thanks for visiting!"""
         inputs=chatbot,
         outputs=chatbot
     )
-    send_msg.click(
+    send_msg_btn.click(
         lambda h: submit_message("You can send Mamta a note anonymously or with your name. If you know her, she'd love your honest take on her strengths and weaknesses, and any critical feedback that helps her become the best version of herself. What message would you like to send her ? ", h),
         inputs=chatbot,
         outputs=chatbot
