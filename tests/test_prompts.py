@@ -109,6 +109,10 @@ def test_recruiter_mode_uses_third_person():
     assert "third person" in recruiter.lower()
     assert "senior technical IC" in recruiter
 
+def test_scope_section_present():
+    msg = prompts.system_message
+    assert "SCOPE" in msg
+    assert "not a general-purpose assistant" in msg
 
 def test_recruiter_example_is_third_person():
     msg = _msg()
