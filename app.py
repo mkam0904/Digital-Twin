@@ -80,11 +80,6 @@ CUSTOM_CSS = """
 with gr.Blocks() as demo:
 
     gr.Markdown("# Mamta's Digital Twin")
-    gr.Markdown(
-"""Hi! I'm Mamta's digital twin. She built me to share her work in AI engineering, graphics verification, and system-level design. Try one of the prompts below or ask me about my work.
-Thanks for visiting!"""
-    )
-
     with gr.Row(elem_id="prompt_row"):
         background_btn = gr.Button("Background", variant="secondary", scale=0)
         ai_btn = gr.Button("AI Engineering", variant="secondary", scale=0)
