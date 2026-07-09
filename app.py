@@ -177,5 +177,6 @@ Thanks for visiting!"""
         [chatbot, msg]
     )
 
-print("Launching...")
-demo.launch(debug=True, show_error=True, quiet=False, css=CUSTOM_CSS,ssr_mode=False)
+if __name__ == "__main__":
+    print("Launching...")
+    demo.launch(debug=True, show_error=True, quiet=False, css=CUSTOM_CSS,ssr_mode=False)
