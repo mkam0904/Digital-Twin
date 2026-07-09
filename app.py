@@ -96,7 +96,7 @@ You can also send her a note — anonymously or with your name. If you know her,
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
     initial_message = "Hi there! Feel free to ask me about Mamta's work in GPU Display IP, pre-silicon verification, RTL design, or AI engineering. What would you like to know?"
     chatbot = gr.Chatbot(
-        value=[("", initial_message)],
+        value=[{"role": "assistant", "content": initial_message}],
         label="Digital Twin",
         # avatar_images=(None, AVATAR_PATH),
         avatar_images=(None, None),
