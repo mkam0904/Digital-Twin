@@ -90,7 +90,7 @@ You can also send her a note — anonymously or with your name. If you know her,
     with gr.Row(elem_id="prompt_row"):
         background_btn = gr.Button("Background", variant="secondary", scale=0)
         ai_btn = gr.Button("AI Engineering", variant="secondary", scale=0)
-        memory_btn = gr.Button("KPI", variant="secondary", scale=0)
+        kpi_btn = gr.Button("KPI", variant="secondary", scale=0)
         fifa_btn = gr.Button("🏆 FIFA World Cup", variant="secondary", scale=0, elem_id="fifa_btn")
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
@@ -126,8 +126,8 @@ You can also send her a note — anonymously or with your name. If you know her,
         inputs=[chatbot],
         outputs=[chatbot, msg]
     )
-    memory_btn.click(
-        lambda h: submit_message("Explain your Memory BFM ownership and design work", h),
+    kpi_btn.click(
+        lambda h: submit_message("Explain your KPI work", h),
         inputs=[chatbot],
         outputs=[chatbot, msg]
     )
