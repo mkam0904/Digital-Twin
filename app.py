@@ -132,11 +132,6 @@ You can also send her a note — anonymously or with your name. If you know her,
         inputs=[chatbot],
         outputs=[chatbot, msg]
     )
-    leader_btn.click(
-        lambda h: submit_message("Describe your leadership and mentoring experience", h),
-        inputs=[chatbot],
-        outputs=[chatbot, msg]
-    )
     fifa_btn.click(
         fn=add_fifa,
         inputs=chatbot,
