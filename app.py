@@ -169,4 +169,4 @@ You can also send her a note — anonymously or with your name. If you know her,
     )
 
 print("Launching...")
-demo.launch(debug=True, show_error=True, quiet=False, css=CUSTOM_CSS)
+demo.launch(debug=True, show_error=True, quiet=False, css=CUSTOM_CSS,ssr_mode=False)
