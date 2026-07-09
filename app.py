@@ -110,12 +110,11 @@ You can also send her a note — anonymously or with your name. If you know her,
 
     with gr.Row():
         msg = gr.Textbox(
-            placeholder="Ask Mamta about her work ...",
+            placeholder="Ask me anything...",
             show_label=False,
-            scale=8,
-            container=False
+            submit_btn=True,   # adds a send (arrow) button inside the textbox
+            elem_id="msg-input"
         )
-        send_btn = gr.Button("➤", scale=1, min_width=48)
 
     background_btn.click(
         lambda h: submit_message("What's your background?", h),
@@ -172,11 +171,6 @@ You can also send her a note — anonymously or with your name. If you know her,
         submit_message,
         [msg, chatbot],
         [chatbot, msg]
-    )
-    send_btn.click(
-        fn=chat,
-        inputs=[msg, chatbot, state],
-        outputs=[chatbot, state, msg]
     )
 
 print("Launching...")
