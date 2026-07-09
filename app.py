@@ -90,8 +90,7 @@ You can also send her a note — anonymously or with your name. If you know her,
     with gr.Row(elem_id="prompt_row"):
         background_btn = gr.Button("Background", variant="secondary", scale=0)
         ai_btn = gr.Button("AI Engineering", variant="secondary", scale=0)
-        memory_btn = gr.Button("Memory BFM", variant="secondary", scale=0)
-        leader_btn = gr.Button("Leadership", variant="secondary", scale=0)
+        memory_btn = gr.Button("KPI", variant="secondary", scale=0)
         fifa_btn = gr.Button("🏆 FIFA World Cup", variant="secondary", scale=0, elem_id="fifa_btn")
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
@@ -104,7 +103,16 @@ You can also send her a note — anonymously or with your name. If you know her,
         elem_id="chatbot"
     )
 
-    msg = gr.Textbox(placeholder="Ask Mamta about her work ...")
+    # msg = gr.Textbox(placeholder="Ask Mamta about her work ...")
+
+    with gr.Row():
+        msg = gr.Textbox(
+            placeholder="Ask Mamta about her work ...",
+            show_label=False,
+            scale=8,
+            container=False
+        )
+        send_btn = gr.Button("➤", scale=1, min_width=48)
 
     background_btn.click(
         lambda h: submit_message("What's your background?", h),
@@ -157,7 +165,7 @@ You can also send her a note — anonymously or with your name. If you know her,
     /* Mobile optimizations */
     @media (max-width: 768px) {
         #chatbot {
-            height: 500px !important;
+            height: 35vh !important;
         }
     }
     """
@@ -166,6 +174,11 @@ You can also send her a note — anonymously or with your name. If you know her,
         submit_message,
         [msg, chatbot],
         [chatbot, msg]
+    )
+    send_btn.click(
+        fn=chat,
+        inputs=[msg, chatbot, state],
+        outputs=[chatbot, state, msg]
     )
 
 print("Launching...")
