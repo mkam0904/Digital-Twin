@@ -52,7 +52,6 @@ def submit_message(message, history):
         logging.error(traceback.format_exc())
         raise
 
-
 def add_fifa(history):
     history = history or []
     history.append({"role": "user", "content": "Show FIFA World Cup Today"})
@@ -83,8 +82,7 @@ with gr.Blocks() as demo:
     gr.Markdown("# Mamta's Digital Twin")
     gr.Markdown(
 """Hi! I'm Mamta's digital twin. She built me to share her work in AI engineering, graphics verification, and system-level design. Try one of the prompts below or ask me about my work.
-
-You can also send her a note — anonymously or with your name. If you know her, she'd love your honest take on her strengths and weaknesses, and any critical feedback that helps her become the best version of herself. Thanks for visiting!"""
+Thanks for visiting!"""
     )
 
     with gr.Row(elem_id="prompt_row"):
@@ -92,6 +90,7 @@ You can also send her a note — anonymously or with your name. If you know her,
         ai_btn = gr.Button("AI Engineering", variant="secondary", scale=0)
         kpi_btn = gr.Button("KPI", variant="secondary", scale=0)
         fifa_btn = gr.Button("🏆 FIFA World Cup", variant="secondary", scale=0, elem_id="fifa_btn")
+        send_message_btn = gr.Button("Send Message", variant="secondary", scale=0)
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
     initial_message = "Hi there! Feel free to ask me about Mamta's work in GPU Display IP, pre-silicon verification, RTL design, or AI engineering. What would you like to know?"
@@ -133,6 +132,11 @@ You can also send her a note — anonymously or with your name. If you know her,
     )
     fifa_btn.click(
         fn=add_fifa,
+        inputs=chatbot,
+        outputs=chatbot
+    )
+    send_msg.click(
+        lambda h: submit_message("You can send Mamta a note anonymously or with your name. If you know her, she'd love your honest take on her strengths and weaknesses, and any critical feedback that helps her become the best version of herself. What message would you like to send her ? ", h),
         inputs=chatbot,
         outputs=chatbot
     )
