@@ -24,12 +24,12 @@ logging.basicConfig(
 
 # ---- Build once at startup ----
 documents = load_documents()
-rag_index = RAGIndex.from_documents(client, documents)
-notifier = Notifier(user_key=PUSHOVER_USER, api_token=PUSHOVER_TOKEN)
-fifa_client = FifaClient(api_key=APIFOOTBALL_API_KEY)
+rag_index = RAGIndex.from_documents(config.client, documents)
+notifier = Notifier(user_key=config.PUSHOVER_USER, api_token=config.PUSHOVER_TOKEN)
+fifa_client = FifaClient(api_key=config.APIFOOTBALL_API_KEY)
 tool_registry = ToolRegistry(notifier=notifier,fifa_client=fifa_client)
 twin = DigitalTwin(
-    client=client,
+    client=config.client,
     rag_index=rag_index,
     tools=tool_registry,
     system_message=system_message,
