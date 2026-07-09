@@ -100,6 +100,17 @@ with gr.Blocks() as demo:
         elem_id="chatbot"
     )
 
+    SEND_MSG_PROMPT = (
+        "You can send Mamta a note anonymously or with your name. If you know "
+        "her, she'd love your honest take on her strengths and weaknesses, and "
+        "any critical feedback that helps her become the best version of "
+        "herself. What message would you like to send her?"
+    )
+
+    def show_send_prompt(history):
+        history = history or []
+        return history + [{"role": "assistant", "content": SEND_MSG_PROMPT}]
+
     # msg = gr.Textbox(placeholder="Ask Mamta about her work ...")
 
     with gr.Row():
@@ -131,7 +142,7 @@ with gr.Blocks() as demo:
         outputs=chatbot
     )
     send_msg_btn.click(
-        lambda h: submit_message("You can send Mamta a note anonymously or with your name. If you know her, she'd love your honest take on her strengths and weaknesses, and any critical feedback that helps her become the best version of herself. What message would you like to send her ? ", h),
+        show_send_prompt,
         inputs=chatbot,
         outputs=chatbot
     )
