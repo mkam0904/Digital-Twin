@@ -1,6 +1,6 @@
 import pytest
 import gradio as gr
-from app import initial_message
+from src.prompts import initial_message
 
 def test_chatbot_initialization():
     """Test that chatbot initializes without format errors"""

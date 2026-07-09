@@ -7,7 +7,7 @@ import traceback
 import logging
 
 from src.prompts import initial_message
-from config import client, PUSHOVER_USER, PUSHOVER_TOKEN, APIFOOTBALL_API_KEY
+import config 
 from data_loader import load_documents
 from rag import RAGIndex
 from notifications import Notifier
