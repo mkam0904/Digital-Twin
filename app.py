@@ -96,7 +96,7 @@ with gr.Blocks() as demo:
         avatar_images=(None, None),
         height=400,
         container=True,
-        autoscroll=True,
+        autoscroll=False,
         elem_id="chatbot"
     )
 
