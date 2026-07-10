@@ -81,11 +81,11 @@ with gr.Blocks() as demo:
 
     gr.Markdown("# Mamta's Digital Twin")
     with gr.Row(elem_id="prompt_row"):
-        background_btn = gr.Button("Background", variant="secondary", scale=0)
-        ai_btn = gr.Button("AI Engineering", variant="secondary", scale=0)
-        kpi_btn = gr.Button("KPI", variant="secondary", scale=0)
-        fifa_btn = gr.Button("🏆 FIFA World Cup", variant="secondary", scale=0, elem_id="fifa_btn")
-        send_msg_btn = gr.Button("Send Message", variant="secondary", scale=0)
+        background_btn = gr.Button("Background", variant="secondary", size="sm", scale=0)
+        ai_btn = gr.Button("AI Engineering", variant="secondary", size="sm", scale=0)
+        kpi_btn = gr.Button("KPI", variant="secondary", size="sm", scale=0)
+        fifa_btn = gr.Button("🏆 FIFA World Cup", variant="secondary", size="sm", scale=0, elem_id="fifa_btn")
+        send_msg_btn = gr.Button("Send Message", variant="secondary", size="sm", scale=0)
 
     AVATAR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "avatar_m.png")
     
@@ -148,10 +148,23 @@ with gr.Blocks() as demo:
     )
 
     demo.css = """
+
     #prompt_row button {
-        font-size: 12px;
-        padding: 6px 10px;
-        border-radius: 12px;
+        font-size: 15px;        /* overrides sm's smaller label */
+        padding: 6px 14px;
+        border-radius: 17px;
+    }
+    #chatbot pre, #chatbot code {
+        white-space: pre-wrap;     /* wrap instead of clipping off-screen */
+        font-size: 13px;
+        overflow-x: auto;          /* worst case: scroll within the bubble, not the page */
+    }
+    #prompt-buttons button {
+        padding: 6px 14px;
+        min-height: 34px;
+        font-size: 15px;
+        border-radius: 17px;      /* pill look, WhatsApp-ish */
+        width: auto;              /* size to label, not full row */
     }
     #fifa_btn {
         background: linear-gradient(135deg, #FFD700 0%, #0B3D91 100%);
@@ -174,6 +187,11 @@ with gr.Blocks() as demo:
         #chatbot {
             height: 35vh !important;
         }
+    }
+    /* chat text: bigger for mobile readability */
+    #chatbot, #chatbot p, #chatbot li {
+        font-size: 16px;
+        line-height: 1.45;
     }
     """
 

@@ -128,7 +128,11 @@ class FifaClient:
         ]
 
     def today_cards(self) -> str:
-        """Render TODAY / COMING UP (through the Final) / PAST with round labels."""
+        """Render TODAY / COMING UP (through the Final) / PAST, stacked for mobile.
+
+        Output is plain markdown/HTML that wraps naturally on narrow screens —
+        no <pre> blocks, no fixed-width columns.
+        """
         today, tomorrow, yesterday = self._dates()
 
         matches_today = self.get_matches(today)
@@ -152,25 +156,22 @@ class FifaClient:
         for label, matches in sections:
             if not matches:
                 continue
-            rounds_and_rows = [
-                (m.get("round"), self._row(self.to_view_model(m))) for m in matches
-            ]
-            widths = self._column_widths([row for _, row in rounds_and_rows])
 
             body_lines = []
             current_round = object()  # sentinel: differs from any real value
-            for round_, row in rounds_and_rows:
+            for m in matches:
+                round_ = m.get("round")
                 if round_ != current_round:
                     if body_lines:
                         body_lines.append("")
                     if round_:
-                        # body_lines.append(round_.upper())
                         body_lines.append(f"<b>{round_.upper()}</b>")
                     current_round = round_
-                body_lines.append(self._format_row(row, widths))
+                body_lines.append(self._format_match(self.to_view_model(m)))
+                body_lines.append("")  # blank line between matches
 
-            body = "\n".join(body_lines)
-            blocks.append(f"### {label}\n<pre>\n{body}\n</pre>")
+            body = "\n".join(body_lines).rstrip()
+            blocks.append(f"### {label}\n{body}")
 
         if not blocks:
             return "⚠️ No FIFA matches found or API failed"
@@ -249,29 +250,34 @@ class FifaClient:
             home_win, away_win, pen_suffix,
         )
 
-    @staticmethod
-    def _column_widths(rows: list[tuple]) -> tuple[int, ...]:
-        """Max width per fixed-width column (date/time/tz/status/home/hs/as/away)."""
-        text_cols = [row[:8] for row in rows]
-        return tuple(max(len(v) for v in col) for col in zip(*text_cols))
+    @classmethod
+    def _format_match(cls, m: dict) -> str:
+        """Render one match as a compact two-line block that wraps on mobile.
 
-    @staticmethod
-    def _format_row(row: tuple, widths: tuple[int, ...]) -> str:
-        (date_str, time_str, tz_abbr, status, home, hs, as_, away,
-         home_win, away_win, pen_suffix) = row
-        w = widths
+        Finished:     🗓 JUL 10, 1 pm PDT
+                      <b>Spain</b> 3 - 1 Belgium
+        Not started:  🗓 JUL 11, 2 pm PDT
+                      Norway vs France
+        Penalties:    🗓 JUL 10, 1 pm PDT
+                      Croatia 0 - 0 <b>Japan</b> (PEN 3-4)
+        """
+        (date_str, time_str, tz_abbr, status,
+         home, hs, as_, away,
+         home_win, away_win, pen_suffix) = cls._row(m)
 
-        home_padded = home.ljust(w[4])
-        if home_win:
-            home_padded = home_padded.replace(home, f"<b>{home}</b>", 1)
+        when = f"{date_str}, {time_str}"
+        if tz_abbr:
+            when = f"{when} {tz_abbr}"
 
-        away_padded = f"<b>{away}</b>" if away_win else away
+        home_txt = f"<b>{home}</b>" if home_win else home
+        away_txt = f"<b>{away}</b>" if away_win else away
 
-        return (
-            f"{date_str.ljust(w[0])}  {time_str.ljust(w[1])} {tz_abbr.ljust(w[2])} "
-            f"{status.ljust(w[3])} {home_padded} {hs.rjust(w[5])} vs "
-            f"{as_.ljust(w[6])} {away_padded}{pen_suffix}"
-        )
+        if status == "NS":
+            teams = f"{home_txt} vs {away_txt}"
+        else:
+            teams = f"{home_txt} {hs} - {as_} {away_txt}{pen_suffix}"
+
+        return f"🗓 {when}\n{teams}"
 
     def __repr__(self) -> str:
         return (

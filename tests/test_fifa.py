@@ -70,23 +70,57 @@ def test_time_tbd_renders_tbd():
     assert time_str == "TBD" and tz_abbr == ""
 
 
-# ---- formatting ----
+# ---- formatting (stacked mobile layout) ----
 
-def test_format_row_bolds_winner_only():
-    rows = [FifaClient._row(vm(status="FT", hs=3, as_=1))]
-    widths = FifaClient._column_widths(rows)
-    line = FifaClient._format_row(rows[0], widths)
-    assert "<b>Spain</b>" in line
-    assert "<b>Belgium</b>" not in line
+def test_format_match_two_line_structure():
+    lines = FifaClient._format_match(vm(status="FT", hs=3, as_=1)).split("\n")
+    assert len(lines) == 2, "expected date/time line + teams line"
+    assert "JUL 10" in lines[0] and "PDT" in lines[0]
+    assert "Spain" in lines[1] and "Belgium" in lines[1]
 
 
-def test_column_widths_match_longest_value():
-    rows = [
-        FifaClient._row(vm(home="A", away="B")),
-        FifaClient._row(vm(home="Longestname", away="C")),
-    ]
-    widths = FifaClient._column_widths(rows)
-    assert widths[4] == len("Longestname")
+def test_format_match_bolds_winner_only():
+    out = FifaClient._format_match(vm(status="FT", hs=3, as_=1))
+    assert "<b>Spain</b>" in out
+    assert "<b>Belgium</b>" not in out
+
+
+def test_format_match_finished_shows_scores():
+    out = FifaClient._format_match(vm(status="FT", hs=3, as_=1))
+    assert "3 - 1" in out
+
+
+def test_format_match_not_started_shows_vs_without_scores():
+    m = FifaClient.to_view_model({
+        "home": "France", "away": "Morocco",
+        "home_score": None, "away_score": None,
+        "status": "NS",
+        "kickoff": datetime(2026, 7, 9, 13, 0, tzinfo=PT),
+    })
+    out = FifaClient._format_match(m)
+    teams_line = out.split("\n")[1]
+    assert teams_line == "France vs Morocco", (
+        "NS matches should show 'A vs B' with no dash scores"
+    )
+
+
+def test_format_match_tbd_time():
+    out = FifaClient._format_match(vm(time_tbd=True))
+    when_line = out.split("\n")[0]
+    assert "TBD" in when_line
+    assert "PDT" not in when_line, "no tz abbreviation when time is TBD"
+
+
+def test_format_match_pen_suffix():
+    out = FifaClient._format_match(vm(status="PEN", hs=0, as_=0, ph=3, pa=4))
+    assert "(PEN 3-4)" in out
+    assert "<b>Belgium</b>" in out, "penalty winner should be bolded"
+
+
+def test_format_match_no_pre_or_padding():
+    """Guards the mobile fix: no fixed-width padding artifacts in output."""
+    out = FifaClient._format_match(vm(status="FT", hs=3, as_=1))
+    assert "  " not in out, "double spaces suggest column padding crept back in"
 
 
 # ---- caching (network mocked) ----

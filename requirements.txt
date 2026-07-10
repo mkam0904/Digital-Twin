@@ -5,3 +5,5 @@ requests
 chromadb
 huggingface_hub
 python-dotenv
+pytest
+pyyaml
