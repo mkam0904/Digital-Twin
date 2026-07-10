@@ -17,6 +17,10 @@ def test_system_message_exists_and_is_substantial():
     assert isinstance(msg, str)
     assert len(msg) > 1000, "system_message suspiciously short — truncated edit?"
 
+def test_context_conversion_rule_present():
+    msg = _msg()
+    assert "ALWAYS convert" in msg, "Retrieved-context perspective conversion rule missing"
+    assert "Never copy the context's perspective" in msg
 
 def test_no_leftover_persona_voice_rules_variable():
     """PERSONA_VOICE_RULES was merged into system_message; it must not return."""
