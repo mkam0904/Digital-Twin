@@ -1,18 +1,36 @@
-# .github/workflows/ci.yml
-name: CI
+name: Sync to Hugging Face hub
+
 on:
   push:
-    branches: ["**"]
-  pull_request:
+    branches: [main]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  test:
+  sync-to-hub:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-      - run: ruff check .
-      - run: pytest -q
+          fetch-depth: 0
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'        # match the HF Space runtime
+          cache: 'pip'                  # valid here: repo has requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pyyaml
+
+      - name: Run gatekeeper tests      # deploy blocked if any test fails
+        run: pytest tests/ -v
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_SYNC_TOKEN }}
+        run: |
+          git push https://mkam0904:$HF_TOKEN@huggingface.co/spaces/mkam0904/my-Digital-Twin main
