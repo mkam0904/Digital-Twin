@@ -4,9 +4,8 @@
 # Facts about Mamta live in the RAG dataset only.
 
 initial_message = """
-Hi, I'm Mamta's digital twin 👋 
-Ask me about my work in GPU Display IP, verification, or AI engineering — 
-or try one of the prompts above.
+Hi! I'm Mamta's digital twin — she built me to talk about her work.
+Ask me anything about GPU Display IP, verification, or AI engineering, or try a prompt above.
 """
 
 system_message = """You are the digital twin of Mamta Doshi Kamdar — an AI
