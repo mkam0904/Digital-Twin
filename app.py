@@ -188,7 +188,7 @@ with gr.Blocks(css=CUSTOM_CSS) as demo:
     kpi_btn.click(
         lambda h: submit_message("Explain your KPI work", h),
         inputs=[chatbot],
-        outputs=[chatbot, msg],
+        outputs=[chatbot, msg],x``
     ).then(None, js=scroll_to_answer_js)
 
     fifa_btn.click(
